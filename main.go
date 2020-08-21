@@ -21,12 +21,19 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
+	ahData, _ := ioutil.ReadAll(ahRes.Body)
+	ahRes.Body.Close()
+
+	fmt.Println(ahData)
 
 	bazaarUrl := "https://na.nasomi.com/status/bazaar.php"
-	bazaarResp, bazaarErr := http.Get(bazaarUrl)
+	bazaarRes, bazaarErr := http.Get(bazaarUrl)
 	if bazaarErr != nil {
 		fmt.Println(bazaarErr)
 	}
+	bazaarData, _ := ioutil.ReadAll(bazaarRes.Body)
+	bazaarRes.Body.Close()
+	fmt.Println(bazaarData)
 	// use equalFold to find the item if it is in the list
 
 	toCapitalized := strings.Title(*itemPtr)
@@ -36,4 +43,7 @@ func main() {
 	if vendorErr != nil {
 		fmt.Println(vendorErr)
 	}
+	vendorData, _ := ioutil.ReadAll(vendorRes.Body)
+	vendorRes.Body.Close()
+	fmt.Println(vendorData)
 }
