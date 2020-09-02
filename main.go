@@ -18,7 +18,10 @@ func main() {
 	fmt.Println(price)
 	fmt.Println(itemID)
 
-	ahPrice := parsers.AuctionParse(itemID)
+	ahPrice, ahErr := parsers.AuctionParse(itemID)
+	if ahErr != nil {
+		fmt.Println(ahErr)
+	}
 
 	bazaarPrice, bazaarErr := parsers.BazaarParse(itemPtr)
 	if bazaarErr != nil {

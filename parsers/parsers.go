@@ -41,7 +41,7 @@ func VendorParse(itemPtr *string) (string, string, error) {
 }
 
 // AuctionParse takes an itemID and returns the most recent AH price.
-func AuctionParse(itemID string) string {
+func AuctionParse(itemID string) (string, error) {
 	type RecentSummary struct {
 		OnStock    string
 		Sold15Days string
@@ -79,7 +79,7 @@ func AuctionParse(itemID string) string {
 		ahPayload,
 	)
 	if err != nil {
-		fmt.Println(err)
+		return "", err
 	}
 
 	buf := new(bytes.Buffer)
@@ -89,11 +89,11 @@ func AuctionParse(itemID string) string {
 	jsonifiedResp := AHResponse{}
 	jsonErr := json.Unmarshal([]byte(newStr), &jsonifiedResp)
 	if jsonErr != nil {
-		fmt.Println(jsonErr)
+		return "", jsonErr
 	}
 	defer ahRes.Body.Close()
 
-	return jsonifiedResp.Sale_List[0].Price
+	return jsonifiedResp.Sale_List[0].Price, nil
 }
 
 // BazaarParse takes a string pointer to the item name and pulls the lowest bazaar price
