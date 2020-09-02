@@ -109,8 +109,24 @@ func BazaarParse(itemPtr *string) (string, error) {
 	dataUpper, subUpper := strings.ToUpper(bazaarString), strings.ToUpper(*itemPtr)
 	if strings.Contains(dataUpper, subUpper) {
 		// parse price
+
 		return "999", nil
 	}
 
 	return "", errors.New("No bazaar listings found for: " + string(*itemPtr))
+}
+
+type BazaarResult struct {
+	BazaarList []BazaarItem
+}
+
+type BazaarItem struct {
+	Item   string
+	Zone   string
+	Player string
+	Price  string
+}
+
+func GetAllBazaarRecordsForItem(name string, bazaarData string) (BazaarResult, error) {
+	return "yeet", nil
 }
