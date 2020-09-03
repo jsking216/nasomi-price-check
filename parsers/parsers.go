@@ -177,8 +177,7 @@ func GetAllBazaarRecordsForItem(name string, bazaarData string) (BazaarResult, e
 	}
 
 	var bazaarList []BazaarItem
-	fmt.Println(len(trimmedList) / numberOfCellsPerRecord)
-	for i := 0; i < len(trimmedList); i += 5 {
+	for i := 0; i < len(trimmedList); i += numberOfCellsPerRecord {
 		bazaarList = append(bazaarList, BazaarItem{
 			Item:     trimmedList[i],
 			Zone:     trimmedList[i+1],
