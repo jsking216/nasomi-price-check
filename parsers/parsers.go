@@ -110,8 +110,15 @@ func BazaarParse(itemPtr *string) (string, error) {
 	dataUpper, subUpper := strings.ToUpper(bazaarString), strings.ToUpper(*itemPtr)
 	if strings.Contains(dataUpper, subUpper) {
 		// parse price
+		allOptions, allErr := GetAllBazaarRecordsForItem(subUpper, dataUpper)
 
-		return "999", nil
+		if allErr != nil {
+			return "", allErr
+		}
+
+		cheapest := GetCheapestBazaarItem(allOptions)
+
+		return cheapest.Price, nil
 	}
 
 	return "", errors.New("No bazaar listings found for: " + string(*itemPtr))
