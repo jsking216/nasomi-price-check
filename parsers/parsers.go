@@ -153,15 +153,19 @@ func GetCheapestBazaarItem(bazaarItems BazaarResult) BazaarItem {
 // GetAllBazaarRecordsForItem does the string cleaning and returns only the rows which contain the desired item
 func GetAllBazaarRecordsForItem(name string, bazaarData string) (BazaarResult, error) {
 	var numberOfCellsPerRecord = 5
-	allCells := strings.Split(bazaarData, "<td>")
+	allCells := strings.Split(bazaarData, "<TD>")
+	if len(allCells) < 7 {
+		fmt.Println(allCells)
+		return BazaarResult{}, errors.New("Not enough records to process bazaar")
+	}
 	headersRemoved := allCells[6:]
 	var trimmedList []string
 	var stringsToRemove = []string{
-		"<td>",
-		"</td>",
-		"<tr>",
-		"</tr>",
-		"</table>",
+		"<TD>",
+		"</TD>",
+		"<TR>",
+		"</TR>",
+		"</TABLE>",
 	}
 
 	var currentRecordWindow = 999
