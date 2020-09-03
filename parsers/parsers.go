@@ -145,6 +145,7 @@ func GetCheapestBazaarItem(bazaarItems BazaarResult) BazaarItem {
 
 // GetAllBazaarRecordsForItem does the string cleaning and returns only the rows which contain the desired item
 func GetAllBazaarRecordsForItem(name string, bazaarData string) (BazaarResult, error) {
+	var numberOfCellsPerRecord = 5
 	allCells := strings.Split(bazaarData, "<td>")
 	headersRemoved := allCells[6:]
 	var trimmedList []string
@@ -155,10 +156,20 @@ func GetAllBazaarRecordsForItem(name string, bazaarData string) (BazaarResult, e
 		"</tr>",
 		"</table>",
 	}
+
+	var currentRecordWindow = 999
 	for _, ch := range headersRemoved {
 		if strings.Contains(ch, name) {
+			currentRecordWindow = 0
+			trimmedList = append(trimmedList, strings.TrimSpace(removeStringFromString(ch, stringsToRemove)))
+			currentRecordWindow++
+			continue
+		}
+
+		if currentRecordWindow < numberOfCellsPerRecord {
 			trimmedList = append(trimmedList, strings.TrimSpace(removeStringFromString(ch, stringsToRemove)))
 		}
+		currentRecordWindow++
 	}
 
 	if len(trimmedList) < 1 {
@@ -166,7 +177,8 @@ func GetAllBazaarRecordsForItem(name string, bazaarData string) (BazaarResult, e
 	}
 
 	var bazaarList []BazaarItem
-	for i := 0; i < len(trimmedList)/5; i += 5 {
+	fmt.Println(len(trimmedList) / numberOfCellsPerRecord)
+	for i := 0; i < len(trimmedList); i += 5 {
 		bazaarList = append(bazaarList, BazaarItem{
 			Item:     trimmedList[i],
 			Zone:     trimmedList[i+1],

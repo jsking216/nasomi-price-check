@@ -1,7 +1,6 @@
 package parsers_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -37,8 +36,6 @@ func Test_GetAllBazaarRecordsForItem(t *testing.T) {
 	}
 
 	bazaarResult, parseErr := parsers.GetAllBazaarRecordsForItem("plate of sole sushi", exampleBazaarResponse)
-
-	fmt.Printf("%+v\n", bazaarResult)
 
 	if parseErr != nil {
 		t.Error("Receved parsing error:", parseErr)
