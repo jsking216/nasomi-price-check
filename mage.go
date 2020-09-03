@@ -13,3 +13,8 @@ func Build() error {
 	}
 	return sh.Run("go", "install", "./...")
 }
+
+func Test() error {
+	err := sh.Run("go", "test", "./...")
+	return err
+}

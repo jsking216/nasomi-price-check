@@ -1,30 +1,131 @@
 package parsers_test
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/jsking216/nasomi-price-check/parsers"
 )
 
-func Test_BazaarParse(t *testing.T) {
-}
-
 func Test_GetAllBazaarRecordsForItem(t *testing.T) {
-	exampleBazaarResponse := "Record Count: 558.<br><br><table border=1><tr><td><strong>Item</td><td><strong>Location</td><td><strong>Seller</td><td><strong>Price</td><td>Quantity</td></tr><tr><td> 'C' egg   </td><td>    </td><td>50</td><td>4</td></tr><tr><td> ginger cookie   </td><td>    West_Ronfaure </td><td>Tonkatough</td><td>50</td><td>2</td></tr><tr><td> ginger cookie   </td><td>    Crawlers_Nest </td><td>Littlearms</td><td>75</td><td>1</td></tr><tr><td> gold key   </td><td>    Bastok_Mines </td><td>Typical</td><td>39999</td><td>1</td></tr><tr><td> gold key   </td><td>    Bastok_Mines </td><td>Thunderingtapir</td><td>40000</td><td>1</td></tr><tr><td> golden Hakutaku eye   </td><td>    Southern_San_dOria </td><td>Alawn</td><td>15000</td><td>1</td></tr><tr><td> grape daifuku   </td><td>    Valkurm_Dunes </td><td>Ardbegislay</td><td>3000</td><td>1</td></tr><tr><td> grape daifuku +1   </td><td>    Valkurm_Dunes </td><td>Ardbegislay</td><td>10000</td><td>1</td></tr><tr><td> great bow +1   </td><td>    Lower_Jeuno </td><td>Veticjeuno</td><td>23000</td><td>1</td></tr><tr><td> guespiere   </td><td>    Lower_Jeuno </td><td>Yaasha</td><td>15900</td><td>1</td></tr><tr><td> Hakutaku eye cluster   </td><td>    Lower_Jeuno </d>Ironballs</td><td>4000</td><td>3</td></tr><tr><td> marinara pizza   </td><td>    West_Ronfaure </td><td>Tonkatough</td><td>4000</td><td>3</td></tr><tr><td> meat mithkabob   </td><td>    Valkurm_Dunes </td><td>Ironballs</td><td>750</td><td>3</td></tr><tr><td> meat mithkabob   </td><td>    West_Ronfaure </td><td>Tonkatough</td><td>750</td><td>4</td></tr><tr><td> meat mithkabob   </td><td>    Residential_Area </td><td>Jrkillah</td><td>1000</td><td>1</td></tr><tr><td> melon pie   </td><td>    Qufim_Island </td><td>Zadrake</td><td>250</td><td>2</td></tr><tr><td> melon pie +1   </td><td>    Valkurm_Dunes </td><td>Scarednewbie</td><td>3000</td><td>1</td></tr><tr><td> mezraq   </td><td>    Lower_Jeuno </td><td>Veticjeuno</td><td>545000</td><td>1</td></tr><tr><td> mezraq   </td><td>    Lower_Jeuno </td><td>Veticjeuno</td><td>600000</td><td>1</td></tr><tr><td> Minerva's ring   </td><td>    Lower_Jeuno </td><td>Moneyplz</td><td>3000000</td><td>1</td></tr><tr><td> Minerva's ring   </td><td>    Dynamis-Valkurm </td><td>Myelrah</td><td>7500000</td><td>1</td></tr><tr><td> Minerva's ring   </td><td>    Lower_Jeuno </td><td>Antzatemywife</td><td>8000000</td><td>1</td></tr><tr><td> minstrel's ring   </td><td>    Crawlers_Nest </td><td>Littlearms</td><td>5200000</td><td>1</td></td><td>1</td></tr><tr><td> piece of akamochi +1   </td><td>    Valkurm_Dunes </td><td>Ardbegislay</td><td>5500</td><td>1</td></tr><tr><td> piece of bubble chocolate   </td><td>    Valkurm_Dunes </td><td>Ironballs</td><td>75</td><td>1</td></tr><tr><td> piece of dogwood lumber   </td><td>    Bastok_Markets </td><td>Gilseller</td><td>20000</td><td>1</td></tr><tr><td> piece of kusamochi   </td><td>    Valkurm_Dunes </td><td>Ardbegislay</td><td>10000</td><td>1</td></tr><tr><td> piece of magnolia lumber   </td><td>    Dynamis-Windurst </td><td>Malag</td><td>50000</td><td>1</td></tr><tr><td> piece of magnolia lumber   </td><td>    Dynamis-Windurst </td><td>Blackhammer</td><td>69999</td><td>1</td></tr><tr><td> piece of oxblood   </td><td>    Lower_Jeuno </td><td>Alphaq</td><td>45000</td><td>1</td></tr><tr><td> pinch of bomb queen ash   </td><td>    Lower_Jeuno </td><td>Almond</td><td>2999</td><td>3</td></tr><tr><td> pinch of bomb queen ash   </td><td>    Port_Windurst </td><td>Ooopsie</td><td>4500</td><td>3</td></tr><tr><td> pinch of bomb queen ash   </td><td>    Valkurm_Dunes </td><td>Ibebe</td><td>5000</td><td>1</td></tr><tr><td> pinch of bomb queen ash   </td><td>    Lower_Jeuno </td><td>Modelo</td><td>5000</td><td>2</td></tr><tr><td> pinch of Valkurm sunsand   </td><td>    Lower_Jeuno </td><td>Yaasha</td><td>900</td><td>1</td></tr><tr><td> plate of crab sushi   </td><td>    Qufim_Island </td><td>Cringyedgelord</td><td>500</td><td>1</td></tr><tr><td> plate of crab sushi   </td><td>    Valkurm_Dunes </td><td>Ironballs</td><td>750</td><td>2</td></tr><tr><td> plate of crab sushi   </td><td>    West_Ronfaure </td><td>Tonkatough</td><td>750</td><td>1</td></tr><tr><td> plate of crab sushi +1   </td><td>    Valkurm_Dunes </td><td>Scarednewbie</td><td>800</td><td>1</td></tr><tr><td> plate of crab sushi +1   </td><td>    Valkurm_Dunes </td><td>Ardbegislay</td><td>950</td><td>1</td></tr><tr><td> plate of crab sushi +1   </td><td>    Valkurm_Dunes </td><td>Ironballs</td><td>1200</td><td>1</td></tr><tr><td> plate of sole sushi   </td><td>    Valkurm_Dunes </td><td>Scarednewbie</td><td>1700</td><td>3</td></tr><tr><td> plate of sole sushi   </td><td>    Qufim_Island </td><td>Cringyedgelord</td><td>1700</td><td>3</td></tr><tr><td> plate of sole sushi   </td><td>    Valkurm_Dunes </td><td>Ardbegislay</td><td>1900</tr></table>"
+	exampleBazaarResponse := "Record Count: 558.<br><br><table border=1><tr><td><strong>Item</td><td><strong>Location</td><td><strong>Seller</td><td><strong>Price</td><td>Quantity</td></tr><tr><td> ginger cookie   </td><td>    West_Ronfaure </td><td>Tonkatough</td><td>50</td><td>2</td></tr><tr><td> ginger cookie   </td><td>    Crawlers_Nest </td><td>Littlearms</td><td>75</td><td>1</td></tr><tr><td> gold key   </td><td>    Bastok_Mines </td><td>Typical</td><td>39999</td><td>1</td></tr><tr><td> gold key   </td><td>    Bastok_Mines </td><td>Thunderingtapir</td><td>40000</td><td>1</td></tr><tr><td> golden Hakutaku eye   </td><td>    Southern_San_dOria </td><td>Alawn</td><td>15000</td><td>1</td></tr><tr><td> grape daifuku   </td><td>    Valkurm_Dunes </td><td>Ardbegislay</td><td>3000</td><td>1</td></tr><tr><td> grape daifuku +1   </td><td>    Valkurm_Dunes </td><td>Ardbegislay</td><td>10000</td><td>1</td></tr><tr><td> great bow +1   </td><td>    Lower_Jeuno </td><td>Veticjeuno</td><td>23000</td><td>1</td></tr><tr><td> guespiere   </td><td>    Lower_Jeuno </td><td>Yaasha</td><td>15900</td><td>1</td></tr><tr><td> Hakutaku eye cluster   </td><td>    Lower_Jeuno </d>Ironballs</td><td>4000</td><td>3</td></tr><tr><td> marinara pizza   </td><td>    West_Ronfaure </td><td>Tonkatough</td><td>4000</td><td>3</td></tr><tr><td> meat mithkabob   </td><td>    Valkurm_Dunes </td><td>Ironballs</td><td>750</td><td>3</td></tr><tr><td> meat mithkabob   </td><td>    West_Ronfaure </td><td>Tonkatough</td><td>750</td><td>4</td></tr><tr><td> meat mithkabob   </td><td>    Residential_Area </td><td>Jrkillah</td><td>1000</td><td>1</td></tr><tr><td> melon pie   </td><td>    Qufim_Island </td><td>Zadrake</td><td>250</td><td>2</td></tr><tr><td> melon pie +1   </td><td>    Valkurm_Dunes </td><td>Scarednewbie</td><td>3000</td><td>1</td></tr><tr><td> mezraq   </td><td>    Lower_Jeuno </td><td>Veticjeuno</td><td>545000</td><td>1</td></tr><tr><td> mezraq   </td><td>    Lower_Jeuno </td><td>Veticjeuno</td><td>600000</td><td>1</td></tr><tr><td> Minerva's ring   </td><td>    Lower_Jeuno </td><td>Moneyplz</td><td>3000000</td><td>1</td></tr><tr><td> Minerva's ring   </td><td>    Dynamis-Valkurm </td><td>Myelrah</td><td>7500000</td><td>1</td></tr><tr><td> Minerva's ring   </td><td>    Lower_Jeuno </td><td>Antzatemywife</td><td>8000000</td><td>1</td></tr><tr><td> minstrel's ring   </td><td>    Crawlers_Nest </td><td>Littlearms</td><td>5200000</td><td>1</td></td><td>1</td></tr><tr><td> piece of akamochi +1   </td><td>    Valkurm_Dunes </td><td>Ardbegislay</td><td>5500</td><td>1</td></tr><tr><td> piece of bubble chocolate   </td><td>    Valkurm_Dunes </td><td>Ironballs</td><td>75</td><td>1</td></tr><tr><td> piece of dogwood lumber   </td><td>    Bastok_Markets </td><td>Gilseller</td><td>20000</td><td>1</td></tr><tr><td> piece of kusamochi   </td><td>    Valkurm_Dunes </td><td>Ardbegislay</td><td>10000</td><td>1</td></tr><tr><td> piece of magnolia lumber   </td><td>    Dynamis-Windurst </td><td>Malag</td><td>50000</td><td>1</td></tr><tr><td> piece of magnolia lumber   </td><td>    Dynamis-Windurst </td><td>Blackhammer</td><td>69999</td><td>1</td></tr><tr><td> piece of oxblood   </td><td>    Lower_Jeuno </td><td>Alphaq</td><td>45000</td><td>1</td></tr><tr><td> pinch of bomb queen ash   </td><td>    Lower_Jeuno </td><td>Almond</td><td>2999</td><td>3</td></tr><tr><td> pinch of bomb queen ash   </td><td>    Port_Windurst </td><td>Ooopsie</td><td>4500</td><td>3</td></tr><tr><td> pinch of bomb queen ash   </td><td>    Valkurm_Dunes </td><td>Ibebe</td><td>5000</td><td>1</td></tr><tr><td> pinch of bomb queen ash   </td><td>    Lower_Jeuno </td><td>Modelo</td><td>5000</td><td>2</td></tr><tr><td> pinch of Valkurm sunsand   </td><td>    Lower_Jeuno </td><td>Yaasha</td><td>900</td><td>1</td></tr><tr><td> plate of crab sushi   </td><td>    Qufim_Island </td><td>Cringyedgelord</td><td>500</td><td>1</td></tr><tr><td> plate of crab sushi   </td><td>    Valkurm_Dunes </td><td>Ironballs</td><td>750</td><td>2</td></tr><tr><td> plate of crab sushi   </td><td>    West_Ronfaure </td><td>Tonkatough</td><td>750</td><td>1</td></tr><tr><td> plate of crab sushi +1   </td><td>    Valkurm_Dunes </td><td>Scarednewbie</td><td>800</td><td>1</td></tr><tr><td> plate of crab sushi +1   </td><td>    Valkurm_Dunes </td><td>Ardbegislay</td><td>950</td><td>1</td></tr><tr><td> plate of crab sushi +1   </td><td>    Valkurm_Dunes </td><td>Ironballs</td><td>1200</td><td>1</td></tr><tr><td> plate of sole sushi   </td><td>    Valkurm_Dunes </td><td>Scarednewbie</td><td>1700</td><td>3</td></tr><tr><td> plate of sole sushi   </td><td>    Qufim_Island </td><td>Cringyedgelord</td><td>1700</td><td>3</td></tr><tr><td> plate of sole sushi   </td><td>    Valkurm_Dunes </td><td>Ardbegislay</td><td>1900</td><td>3</td></tr></table>"
+	expectedResult := parsers.BazaarResult{
+		BazaarList: []parsers.BazaarItem{
+			{
+				Item:     "plate of sole sushi",
+				Zone:     "Valkurm_Dunes",
+				Player:   "Scarednewbie",
+				Price:    "1700",
+				Quantity: "3",
+			},
+			{
+				Item:     "plate of sole sushi",
+				Zone:     "Qufim_Island",
+				Player:   "Cringyedgelord",
+				Price:    "1700",
+				Quantity: "3",
+			},
+			{
+				Item:     "plate of sole sushi",
+				Zone:     "Valkurm_Dunes",
+				Player:   "Ardbegislay",
+				Price:    "1900",
+				Quantity: "3",
+			},
+		},
+	}
 
 	bazaarResult, parseErr := parsers.GetAllBazaarRecordsForItem("plate of sole sushi", exampleBazaarResponse)
+
+	fmt.Printf("%+v\n", bazaarResult)
+
 	if parseErr != nil {
 		t.Error("Receved parsing error:", parseErr)
 	}
-	if bazaarResult != &BazaarShape {
+	if !cmp.Equal(bazaarResult, expectedResult) {
+		t.Error("Results do not match expectation")
 	}
 }
 
-func Test_AuctionParse(t *testing.T) {
-	exampleAuctionResponse := `{"sale_list":[{"id":"62591","name":"Tiem","itemid":"17396","price":"100","stack":"0","date":"August 8th 2020 17:13:57","sale":"100","sell_date":"08 15 2020","time":"171.8850","buyer":"Bzerk","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"29920","name":"Anataboga","itemid":"17396","price":"1000","stack":"0","date":"June 23rd 2020 19:56:09","sale":"1000","sell_date":"07 07 2020","time":"319.6122","buyer":"Sasaso","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"52639","name":"She","itemid":"17396","price":"1","stack":"0","date":"June 8th 2020 00:12:06","sale":"1","sell_date":"06 11 2020","time":"93.9675","buyer":"Reeaper","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"18761","name":"Trumpsupporter","itemid":"17396","price":"10","stack":"0","date":"April 29th 2020 19:21:44","sale":"10","sell_date":"05 03 2020","time":"90.3564","buyer":"Beas","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"1168","name":"Zigma","itemid":"17396","price":"1","stack":"0","date":"January 12th 2020 21:28:09","sale":"1","sell_date":"01 21 2020","time":"194.6842","buyer":"Cav","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"52639","name":"She","itemid":"17396","price":"1","stack":"0","date":"December 19th 2019 00:02:13","sale":"1","sell_date":"12 23 2019","time":"104.7575","buyer":"Xertzie","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"2004","name":"Steakstyles","itemid":"17396","price":"100","stack":"0","date":"October 30th 2019 17:36:17","sale":"100","sell_date":"11 23 2019","time":"568.7714","buyer":"Ionicskinny","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"6720","name":"Nathano","itemid":"17396","price":"100","stack":"0","date":"October 13th 2019 02:30:20","sale":"100","sell_date":"10 25 2019","time":"287.4325","buyer":"Punip","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"7016","name":"Magicpants","itemid":"17396","price":"90","stack":"0","date":"October 6th 2019 22:23:15","sale":"90","sell_date":"10 12 2019","time":"145.1092","buyer":"Glacia","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9424","name":"Woodtable","itemid":"17396","price":"100000","stack":"0","date":"September 22nd 2019 18:54:49","sale":"100000","sell_date":"09 22 2019","time":"0.0319","buyer":"Marbletable","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"30870","name":"Rubicund","itemid":"17396","price":"30","stack":"0","date":"September 9th 2019 11:12:03","sale":"30","sell_date":"09 12 2019","time":"67.5261","buyer":"Ricola","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"8424","name":"Oletater","itemid":"17396","price":"50","stack":"0","date":"August 21st 2019 01:17:51","sale":"50","sell_date":"08 22 2019","time":"44.2956","buyer":"Darkanoth","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"8762","name":"Fallenone","itemid":"17396","price":"100","stack":"0","date":"July 29th 2019 22:52:49","sale":"100","sell_date":"08 05 2019","time":"168.6908","buyer":"Soulz","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"18701","name":"Shipwreck","itemid":"17396","price":"300","stack":"0","date":"May 25th 2019 00:51:42","sale":"300","sell_date":"06 14 2019","time":"498.4861","buyer":"Briores","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"30792","name":"Felgy","itemid":"17396","price":"100","stack":"0","date":"June 6th 2019 06:40:53","sale":"100","sell_date":"06 10 2019","time":"96.5175","buyer":"Shark","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"90","stack":"0","date":"May 8th 2019 18:23:01","sale":"90","sell_date":"05 30 2019","time":"511.9806","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"90","stack":"0","date":"May 8th 2019 18:22:46","sale":"90","sell_date":"05 30 2019","time":"511.9814","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:27:10","sale":"80","sell_date":"05 30 2019","time":"511.8994","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:27:01","sale":"80","sell_date":"05 30 2019","time":"511.8983","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:26:53","sale":"80","sell_date":"05 30 2019","time":"511.8978","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:26:46","sale":"80","sell_date":"05 30 2019","time":"511.8967","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:26:38","sale":"80","sell_date":"05 30 2019","time":"511.8964","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:26:30","sale":"80","sell_date":"05 30 2019","time":"511.8778","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:26:23","sale":"80","sell_date":"05 30 2019","time":"511.8772","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"90","stack":"0","date":"May 8th 2019 18:26:16","sale":"90","sell_date":"05 30 2019","time":"511.8764","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:26:07","sale":"80","sell_date":"05 30 2019","time":"511.8764","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:25:59","sale":"80","sell_date":"05 30 2019","time":"511.8758","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:25:51","sale":"80","sell_date":"05 30 2019","time":"511.8742","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:25:41","sale":"80","sell_date":"05 30 2019","time":"511.8744","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:25:33","sale":"80","sell_date":"05 30 2019","time":"511.8553","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:25:26","sale":"80","sell_date":"05 30 2019","time":"511.8542","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:25:17","sale":"80","sell_date":"05 30 2019","time":"511.8528","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:25:07","sale":"80","sell_date":"05 30 2019","time":"511.8508","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"90","stack":"0","date":"May 8th 2019 18:24:57","sale":"90","sell_date":"05 30 2019","time":"511.8511","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"80","stack":"0","date":"May 8th 2019 18:22:52","sale":"80","sell_date":"05 30 2019","time":"511.8833","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"90","stack":"0","date":"May 8th 2019 18:27:52","sale":"90","sell_date":"05 30 2019","time":"511.7961","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"90","stack":"0","date":"May 8th 2019 18:27:45","sale":"90","sell_date":"05 30 2019","time":"511.7950","buyer":"Okada","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"100","stack":"0","date":"May 8th 2019 18:27:32","sale":"100","sell_date":"05 25 2019","time":"392.6319","buyer":"Rum","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"100","stack":"0","date":"May 8th 2019 18:27:24","sale":"100","sell_date":"05 25 2019","time":"392.6317","buyer":"Rum","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"},{"id":"9667","name":"Pandastyle","itemid":"17396","price":"100","stack":"0","date":"May 8th 2019 18:27:17","sale":"100","sell_date":"05 22 2019","time":"331.8097","buyer":"Harkat","item_name":"Little Worm","item_desc":"","name_singular":"little worm","name_plural":"little worms","stackSize":"99"}],"sales":{"onStock":"1","sold15days":"1"},"price": null}	
-	}`
+func Test_GetCheapestBazaarItemFirst(t *testing.T) {
+	exampleBazaar := parsers.BazaarResult{
+		BazaarList: []parsers.BazaarItem{
+			{
+				Item:     "testitem1",
+				Zone:     "Big Towm",
+				Player:   "Deeznuts",
+				Price:    "999",
+				Quantity: "1",
+			},
+			{
+				Item:     "testitem1",
+				Zone:     "Small Town",
+				Player:   "Othernuts",
+				Price:    "1000",
+				Quantity: "1",
+			},
+			{
+				Item:     "testitem1",
+				Zone:     "Small Town",
+				Player:   "zzzz",
+				Price:    "345345",
+				Quantity: "1",
+			},
+		},
+	}
+
+	expectedMinimum := parsers.BazaarItem{
+		Item:     "testitem1",
+		Zone:     "Big Towm",
+		Player:   "Deeznuts",
+		Price:    "999",
+		Quantity: "1",
+	}
+
+	bazaarResult := parsers.GetCheapestBazaarItem(exampleBazaar)
+	if !cmp.Equal(bazaarResult, expectedMinimum) {
+		t.Error("Results do not match expectation")
+	}
 }
 
-func Test_VendorParse(t *testing.T) {
+func Test_GetCheapestBazaarItemLast(t *testing.T) {
+	exampleBazaar := parsers.BazaarResult{
+		BazaarList: []parsers.BazaarItem{
+			{
+				Item:     "testitem1",
+				Zone:     "Big Towm",
+				Player:   "Deeznuts",
+				Price:    "999",
+				Quantity: "1",
+			},
+			{
+				Item:     "testitem1",
+				Zone:     "Small Town",
+				Player:   "Othernuts",
+				Price:    "1000",
+				Quantity: "1",
+			},
+			{
+				Item:     "testitem1",
+				Zone:     "Small Town",
+				Player:   "zzzz",
+				Price:    "111",
+				Quantity: "1",
+			},
+		},
+	}
 
+	expectedMinimum := parsers.BazaarItem{
+		Item:     "testitem1",
+		Zone:     "Small Town",
+		Player:   "zzzz",
+		Price:    "111",
+		Quantity: "1",
+	}
+
+	bazaarResult := parsers.GetCheapestBazaarItem(exampleBazaar)
+	if !cmp.Equal(bazaarResult, expectedMinimum) {
+		t.Error("Results do not match expectation")
+	}
 }

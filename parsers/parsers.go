@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -121,12 +122,69 @@ type BazaarResult struct {
 }
 
 type BazaarItem struct {
-	Item   string
-	Zone   string
-	Player string
-	Price  string
+	Item     string
+	Zone     string
+	Player   string
+	Price    string
+	Quantity string
 }
 
+// GetCheapestBazaarItem returns the lowest priced item from a BazaarResult
+func GetCheapestBazaarItem(bazaarItems BazaarResult) BazaarItem {
+	itemList := bazaarItems.BazaarList
+	minIndex := 0
+	for ind, item := range itemList {
+		i, _ := strconv.Atoi(item.Price)
+		itemListMin, _ := strconv.Atoi(itemList[minIndex].Price)
+		if i < itemListMin {
+			minIndex = ind
+		}
+	}
+	return itemList[minIndex]
+}
+
+// GetAllBazaarRecordsForItem does the string cleaning and returns only the rows which contain the desired item
 func GetAllBazaarRecordsForItem(name string, bazaarData string) (BazaarResult, error) {
-	return "yeet", nil
+	allCells := strings.Split(bazaarData, "<td>")
+	headersRemoved := allCells[6:]
+	var trimmedList []string
+	var stringsToRemove = []string{
+		"<td>",
+		"</td>",
+		"<tr>",
+		"</tr>",
+		"</table>",
+	}
+	for _, ch := range headersRemoved {
+		if strings.Contains(ch, name) {
+			trimmedList = append(trimmedList, strings.TrimSpace(removeStringFromString(ch, stringsToRemove)))
+		}
+	}
+
+	if len(trimmedList) < 1 {
+		return BazaarResult{}, errors.New("Item not found in bazaar data")
+	}
+
+	var bazaarList []BazaarItem
+	for i := 0; i < len(trimmedList)/5; i += 5 {
+		bazaarList = append(bazaarList, BazaarItem{
+			Item:     trimmedList[i],
+			Zone:     trimmedList[i+1],
+			Player:   trimmedList[i+2],
+			Price:    trimmedList[i+3],
+			Quantity: trimmedList[i+4],
+		})
+	}
+	response := BazaarResult{
+		BazaarList: bazaarList,
+	}
+	return response, nil
+}
+
+func removeStringFromString(source string, toRemove []string) string {
+	var finalString = source
+	for _, remove := range toRemove {
+		finalString = strings.ReplaceAll(finalString, remove, "")
+	}
+	return finalString
 }
