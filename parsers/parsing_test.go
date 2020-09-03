@@ -1,6 +1,7 @@
 package parsers_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -12,30 +13,30 @@ func Test_GetAllBazaarRecordsForItem(t *testing.T) {
 	expectedResult := parsers.BazaarResult{
 		BazaarList: []parsers.BazaarItem{
 			{
-				Item:     "plate of sole sushi",
-				Zone:     "Valkurm_Dunes",
-				Player:   "Scarednewbie",
+				Item:     "PLATE OF SOLE SUSHI",
+				Zone:     "VALKURM_DUNES",
+				Player:   "SCAREDNEWBIE",
 				Price:    "1700",
 				Quantity: "3",
 			},
 			{
-				Item:     "plate of sole sushi",
-				Zone:     "Qufim_Island",
-				Player:   "Cringyedgelord",
+				Item:     "PLATE OF SOLE SUSHI",
+				Zone:     "QUFIM_ISLAND",
+				Player:   "CRINGYEDGELORD",
 				Price:    "1700",
 				Quantity: "3",
 			},
 			{
-				Item:     "plate of sole sushi",
-				Zone:     "Valkurm_Dunes",
-				Player:   "Ardbegislay",
+				Item:     "PLATE OF SOLE SUSHI",
+				Zone:     "VALKURM_DUNES",
+				Player:   "ARDBEGISLAY",
 				Price:    "1900",
 				Quantity: "3",
 			},
 		},
 	}
 
-	bazaarResult, parseErr := parsers.GetAllBazaarRecordsForItem("plate of sole sushi", exampleBazaarResponse)
+	bazaarResult, parseErr := parsers.GetAllBazaarRecordsForItem(strings.ToUpper("plate of sole sushi"), strings.ToUpper(exampleBazaarResponse))
 
 	if parseErr != nil {
 		t.Error("Receved parsing error:", parseErr)
