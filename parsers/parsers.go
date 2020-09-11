@@ -30,6 +30,8 @@ func VendorParse(itemPtr *string) (string, string, error) {
 	itemID := forParsingItemID[0:strings.Index(forParsingItemID, "\"")]
 
 	priceSubStart := strings.Index(vendorString, "Price:")
+	// TODO: add fix for NPC prices that aren't followed by "Gil"
+	//if strings.Contains(/)
 	priceSubEnd := strings.Index(vendorString, "Gil")
 	if priceSubStart < 0 || priceSubEnd < 0 {
 		return itemID, "", errors.New(string(*itemPtr) + " is not sold by a vendor.")
@@ -129,7 +131,7 @@ type BazaarResult struct {
 }
 
 type BazaarItem struct {
-	Item     string
+	Item     string4
 	Zone     string
 	Player   string
 	Price    string
