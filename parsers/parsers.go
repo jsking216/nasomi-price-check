@@ -172,7 +172,10 @@ func GetAllBazaarRecordsForItem(name string, bazaarData string) (BazaarResult, e
 
 	var currentRecordWindow = 999
 	for _, ch := range headersRemoved {
-		if strings.Contains(ch, name) {
+		// deal with unwanted +1 records
+		hqBazaarFlag := isHQ(ch)
+		hqNameFlag := isHQ(name)
+		if strings.Contains(ch, name) && xnor(hqBazaarFlag, hqNameFlag) {
 			currentRecordWindow = 0
 			trimmedList = append(trimmedList, strings.TrimSpace(removeStringFromString(ch, stringsToRemove)))
 			currentRecordWindow++
@@ -211,4 +214,12 @@ func removeStringFromString(source string, toRemove []string) string {
 		finalString = strings.ReplaceAll(finalString, remove, "")
 	}
 	return finalString
+}
+
+func xnor(a, b bool) bool {
+	return !((a || b) && (!a || !b))
+}
+
+func isHQ(itemName string) bool {
+	return strings.Contains(itemName, "+1") || strings.Contains(itemName, "+2") || strings.Contains(itemName, "-1")
 }
