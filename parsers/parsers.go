@@ -11,6 +11,12 @@ import (
 	"strings"
 )
 
+// Adding a type for BazaarParse to be able to pass it to a channel
+type BazaarParseResult struct {
+	Price string;
+	Error error;
+}
+
 // VendorParse takes a pointer to the item name and retrieves the minumum vendor price and the itemID
 func VendorParse(itemPtr *string) (string, string, error) {
 	toCapitalized := strings.Title(*itemPtr)
@@ -100,7 +106,9 @@ func AuctionParse(itemID string) (string, error) {
 }
 
 // BazaarParse takes a string pointer to the item name and pulls the lowest bazaar price
-func BazaarParse(itemPtr *string) (string, error) {
+func BazaarParse(itemPtr *string, ch chan BazaarParseResult) {
+	res := new(BazaarParseResult)
+	defer close(ch)
 	bazaarURL := "https://na.nasomi.com/status/bazaar.php"
 	bazaarRes, bazaarErr := http.Get(bazaarURL)
 	if bazaarErr != nil {
@@ -120,10 +128,15 @@ func BazaarParse(itemPtr *string) (string, error) {
 
 		cheapest := GetCheapestBazaarItem(allOptions)
 
-		return cheapest.Price, nil
+		res.Price = cheapest.Price
+		res.Error = nil
+		ch <- *res
+		return nil
 	}
 
-	return "", errors.New("No bazaar listings found for: " + string(*itemPtr))
+	res.Price = ""
+	res.Error = errors.New("No bazaar listings found for: " + string(*itemPtr))
+	ch <- *res
 }
 
 type BazaarResult struct {

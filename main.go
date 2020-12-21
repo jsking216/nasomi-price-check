@@ -8,9 +8,13 @@ import (
 )
 
 func main() {
+	start := time.Now()
 	itemPtr := flag.String("item", "", "ffxi item name")
 	flag.Parse()
 
+	bazaarCh := make(chan BazaarParseResult)
+	go parsers.BazaarParse(itemPtr, bazaarCh)
+	
 	itemID, price, vendorErr := parsers.VendorParse(itemPtr)
 	if vendorErr != nil {
 		fmt.Println(vendorErr)
@@ -25,15 +29,15 @@ func main() {
 		fmt.Println("Auction House Price: " + ahPrice)
 	}
 
-	bazaarPrice, bazaarErr := parsers.BazaarParse(itemPtr)
-	if bazaarErr != nil {
-		fmt.Println(bazaarErr)
+	if bazaarCh.Error) != nil {
+		fmt.Println(bazaarCh.Error)
 	} else {
-		fmt.Println("Bazaar Price: " + bazaarPrice)
+		fmt.Println("Bazaar Price: " + bazaarCh.Price)
 	}
 
-	if vendorErr != nil && ahErr != nil && bazaarErr != nil {
+	if vendorErr != nil && ahErr != nil && bazaarCh.Error) != nil {
 		fmt.Println("ERROR: All price requests failed -- are you sure the item name is correct?")
 	}
-
+	elapsed := time.Since(start)
+	log.Printf("Binomial took %s", elapsed)
 }
